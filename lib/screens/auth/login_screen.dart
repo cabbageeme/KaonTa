@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '/services/auth_service.dart';
 import '/services/user_type_service.dart';
+import '/repositories/user_repository.dart';
 import '/routes/app_routes.dart';
 import '/routes/navigation_service.dart';
 
@@ -286,13 +287,16 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (user != null) {
-        // Determine route based on stored user type before navigating
-        final userType = UserTypeService().selectedUserType;
-        final route = userType == 'customer' 
+        // Fetch user data from database to get their actual userType
+        final userRepository = UserRepository();
+        final userData = await userRepository.getUser(user.uid);
+        
+        // Determine route based on userType from database
+        final route = (userData?.userType == 'customer') 
             ? AppRoutes.customerHome 
             : AppRoutes.ownerDashboard;
         
-        // Clear the user type after determining the route
+        // Clear the user type service
         UserTypeService().clearUserType();
         
         // Navigate cleanly without any overlays

@@ -16,6 +16,7 @@ class AppRoutes {
   static const String ownerDashboard = '/owner-dashboard';
   static const String ownerMenu = '/owner-menu';
   static const String ownerOrders = '/owner-orders';
+  static const String ownerProfile = '/owner-profile';
   
   // Shared routes
   static const String welcome = '/welcome';
@@ -26,7 +27,7 @@ class AppRoutes {
     return [
       userType, socialLogin, login, signup, locationConfirm,
       customerHome, notifications, favorites, profile,
-      ownerDashboard, ownerMenu, ownerOrders,
+      ownerDashboard, ownerMenu, ownerOrders, ownerProfile,
     ].contains(route);
   }
 }

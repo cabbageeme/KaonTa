@@ -53,7 +53,7 @@ class _SocialLoginScreenState extends State<SocialLoginScreen> {
                   ),
                   const SizedBox(height: 32),
                   Text(
-                    'Welcome to Karinderia Spotlight',
+                    'Welcome to KaonTa',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

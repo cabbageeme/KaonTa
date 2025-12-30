@@ -1,5 +1,46 @@
 import 'package:flutter/material.dart';
 
+Widget _buildNetworkImage({
+  required String imageUrl,
+  required double width,
+  required double height,
+  required BoxFit fit,
+  double borderRadius = 0,
+}) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(borderRadius),
+    child: Image.network(
+      imageUrl,
+      width: width,
+      height: height,
+      fit: fit,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Container(
+          width: width,
+          height: height,
+          color: Colors.grey[200],
+          child: const Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        );
+      },
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: width,
+          height: height,
+          color: Colors.grey[300],
+          child: const Icon(Icons.image_not_supported, color: Colors.grey),
+        );
+      },
+    ),
+  );
+}
+
 class EnhancedFavoritesScreen extends StatelessWidget {
   const EnhancedFavoritesScreen({super.key});
 
@@ -77,22 +118,28 @@ class EnhancedFavoritesScreen extends StatelessWidget {
               shrinkWrap: true,
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
+              childAspectRatio: 0.9,
               children: _favoriteMenus
                   .map((m) => Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              m.imageUrl,
-                              width: 70,
-                              height: 70,
-                              fit: BoxFit.cover,
+                          _buildNetworkImage(
+                            imageUrl: m.imageUrl,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                            borderRadius: 12,
+                          ),
+                          const SizedBox(height: 4),
+                          Flexible(
+                            child: Text(
+                              m.name,
+                              style: const TextStyle(fontSize: 11, color: Colors.black87),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                          const SizedBox(height: 6),
-                          Text(m.name,
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.black87)),
                         ],
                       ))
                   .toList(),
@@ -125,14 +172,12 @@ class EnhancedFavoritesScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: Image.network(
-              k.imageUrl,
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-            ),
+          _buildNetworkImage(
+            imageUrl: k.imageUrl,
+            width: 80,
+            height: 80,
+            fit: BoxFit.cover,
+            borderRadius: 14,
           ),
           const SizedBox(width: 12),
           Expanded(

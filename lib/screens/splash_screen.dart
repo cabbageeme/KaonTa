@@ -92,7 +92,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 243, 156, 33),
+      backgroundColor: Colors.white,
       body: AnimatedOpacity(
         opacity: _opacity,
         duration: Duration(milliseconds: 500),
@@ -100,53 +100,17 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // App Logo/Icon
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x66000000),
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.restaurant,
-                  size: 60,
-                  color: Color.fromARGB(255, 33, 243, 68),
-                ),
+              // App Logo
+              Image.asset(
+                'assets/images/logo.png',
+                width: 200,
+                height: 200,
               ),
               
-              SizedBox(height: 32),
+              SizedBox(height: 40),
               
-              // App Title
-              Text(
-                'KaonTa',
-                style: TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              
-              SizedBox(height: 16),
-              
-              // Tagline
-              Text(
-                'Your Local Food Hub',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w300,
-                  letterSpacing: 1.2,
-                ),
-              ),
+              // Motto
+              _buildMotto(),
               
               SizedBox(height: 60),
               
@@ -156,13 +120,39 @@ class _SplashScreenState extends State<SplashScreen> {
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFE8B931)),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMotto() {
+    return Column(
+      children: [
+        Text(
+          'Know What\'s Cooking,',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFFE8B931),
+            letterSpacing: 0.5,
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Eat Without Waiting',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFFE8B931),
+            letterSpacing: 0.5,
+          ),
+        ),
+      ],
     );
   }
 }

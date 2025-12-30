@@ -7,6 +7,7 @@ class UserModel {
   final String? displayName;
   final String? photoUrl;
   final String? mobile;
+  final String? userType; // 'customer' or 'owner'
   final DateTime createdAt;
 
   UserModel({
@@ -16,6 +17,7 @@ class UserModel {
     this.displayName,
     this.photoUrl,
     this.mobile,
+    this.userType,
     required this.createdAt,
   });
 
@@ -28,6 +30,7 @@ class UserModel {
       'displayName': displayName,
       'photoUrl': photoUrl,
       'mobile': mobile,
+      'userType': userType,
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -41,18 +44,20 @@ class UserModel {
       displayName: map['displayName'],
       photoUrl: map['photoUrl'],
       mobile: map['mobile'],
+      userType: map['userType'],
       createdAt: DateTime.parse(map['createdAt']),
     );
   }
 
   // Create from Firebase User
-  factory UserModel.fromFirebaseUser(User user) {
+  factory UserModel.fromFirebaseUser(User user, {String? userType}) {
     return UserModel(
       uid: user.uid,
       email: user.email ?? '',
       username: user.displayName,
       displayName: user.displayName,
       photoUrl: user.photoURL,
+      userType: userType,
       createdAt: DateTime.now(),
     );
   }

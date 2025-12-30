@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '/services/user_type_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../repositories/user_repository.dart';
 
 class UserTypeScreen extends StatefulWidget {
   const UserTypeScreen({super.key});
@@ -10,6 +11,8 @@ class UserTypeScreen extends StatefulWidget {
 
 class _UserTypeScreenState extends State<UserTypeScreen> {
   String? _selectedUserType;
+  bool _isLoading = false;
+  final UserRepository _userRepository = UserRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +191,9 @@ class _UserTypeScreenState extends State<UserTypeScreen> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: _selectedUserType == null ? null : _handleContinue,
+        onPressed: _selectedUserType == null || _isLoading 
+            ? null 
+            : _handleContinue,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.orange[500],
           foregroundColor: Colors.white,
@@ -198,31 +203,69 @@ class _UserTypeScreenState extends State<UserTypeScreen> {
           ),
           elevation: 2,
         ),
-        child: const Text(
-          'Continue',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        child: _isLoading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : const Text(
+                'Continue',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
       ),
     );
   }
 
-  void _handleContinue() {
-    if (_selectedUserType != null) {
-      // Store the user type in the service so login screen can use it
-      UserTypeService().setUserType(_selectedUserType!);
+  Future<void> _handleContinue() async {
+    if (_selectedUserType == null) return;
 
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Get current user
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw Exception('No user logged in');
+      }
+
+      // Update user document with selected userType
+      await _userRepository.updateUser(user.uid, {
+        'userType': _selectedUserType,
+      });
+
+      if (!mounted) return;
+
+      // Navigate based on user type
       switch (_selectedUserType) {
         case 'customer':
-          // Use direct Navigator - this will work immediately
           Navigator.pushNamed(context, '/social-login');
           break;
         case 'owner':
-          // Use direct Navigator - this will work immediately
           Navigator.pushNamed(context, '/login');
           break;
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to save user type: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }

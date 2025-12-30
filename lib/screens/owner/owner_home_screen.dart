@@ -1,23 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:kaontaproject/routes/app_routes.dart';
 
-void main() {
-  runApp(const KarinderiaOwnerApp());
-}
-
-class KarinderiaOwnerApp extends StatelessWidget {
-  const KarinderiaOwnerApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Karinderia Owner',
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        fontFamily: 'Roboto',
-      ),
-      home: const OwnerDashboard(),
-    );
-  }
+Widget _buildNetworkImage({
+  required String imageUrl,
+  required double width,
+  required double height,
+  required BoxFit fit,
+  double borderRadius = 0,
+}) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(borderRadius),
+    child: Image.network(
+      imageUrl,
+      width: width,
+      height: height,
+      fit: fit,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Container(
+          width: width,
+          height: height,
+          color: Colors.grey[200],
+          child: const Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        );
+      },
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: width,
+          height: height,
+          color: Colors.grey[300],
+          child: const Icon(Icons.image_not_supported, color: Colors.grey),
+        );
+      },
+    ),
+  );
 }
 
 class OwnerDashboard extends StatefulWidget {
@@ -30,38 +52,29 @@ class OwnerDashboard extends StatefulWidget {
 class _OwnerDashboardState extends State<OwnerDashboard> {
   bool _isOpen = true;
   final List<String> _menuItems = [
-    'Menudo', 'Bihon', 'Adobo', 'Pokbet',
+    'Menudo', 'Bihon', 'Adobo', 'Pakbet',
     'Lilaga', 'Tinola', 'Mongo', 'Pochero',
-    'Menudo', 'Bihon', 'Adobo', 'Pokbet'
+    'Menudo', 'Bihon', 'Adobo', 'Pakbet'
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Section
-              _buildHeaderSection(),
-              
-              const SizedBox(height: 30),
-              
-              // Status Toggle Section
-              _buildStatusSection(),
-              
-              const SizedBox(height: 30),
-              
-              // Save Changes Button
-              _buildSaveButton(),
-              
-              const SizedBox(height: 40),
-              
-              // Today's Menu Section
-              _buildMenuSection(),
+              _buildHeader(),
+              const SizedBox(height: 20),
+              _buildFeaturedCard(),
+              const SizedBox(height: 24),
+              _buildTodayMenuHeader(),
+              const SizedBox(height: 16),
+              _buildMenuGrid(),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -69,55 +82,67 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
     );
   }
 
-  Widget _buildHeaderSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'Hello, Adrian',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey[800],
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Hello, Adrian',
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              "Maria Lopez's Karinderia",
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            ),
+          ],
         ),
-        const SizedBox(height: 8),
-        Text(
-          "Maria Lopez's Karinderia",
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.orange[700],
-            fontWeight: FontWeight.w600,
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.ownerProfile);
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.person, color: Colors.black54),
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildStatusSection() {
+  Widget _buildFeaturedCard() {
     return Container(
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: const Color(0xFFF7F2AD),
+        borderRadius: BorderRadius.circular(16),
       ),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _buildNetworkImage(
+            imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=300&q=80',
+            height: 140,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            borderRadius: 12,
+          ),
+          const SizedBox(height: 12),
           Text(
-            'Store Status',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[700],
-            ),
+            "Maria Lopez's Karinderia",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 16),
           Row(
@@ -126,7 +151,7 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
                 child: _buildStatusButton(
                   text: 'Open',
                   isActive: _isOpen,
-                  activeColor: Colors.green,
+                  color: Colors.green,
                   onTap: () {
                     setState(() {
                       _isOpen = true;
@@ -139,7 +164,7 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
                 child: _buildStatusButton(
                   text: 'Close',
                   isActive: !_isOpen,
-                  activeColor: Colors.red,
+                  color: Colors.grey,
                   onTap: () {
                     setState(() {
                       _isOpen = false;
@@ -149,15 +174,24 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            _isOpen 
-                ? 'Your karinderia is currently OPEN for business'
-                : 'Your karinderia is currently CLOSED',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[500],
-              fontStyle: FontStyle.italic,
+          const SizedBox(height: 12),
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Changes saved!'),
+                    backgroundColor: Colors.green,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[300],
+                foregroundColor: Colors.black54,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              ),
+              child: const Text('Save Changes', style: TextStyle(fontSize: 12)),
             ),
           ),
         ],
@@ -168,28 +202,24 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
   Widget _buildStatusButton({
     required String text,
     required bool isActive,
-    required Color activeColor,
+    required Color color,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 50,
+        height: 60,
         decoration: BoxDecoration(
-          color: isActive ? activeColor : Colors.grey[200],
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isActive ? activeColor : Colors.grey[300]!,
-            width: 2,
-          ),
+          color: isActive ? color : Colors.grey[200],
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Center(
           child: Text(
             text,
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: isActive ? Colors.white : Colors.grey[600],
+              fontWeight: FontWeight.w700,
+              color: isActive ? Colors.white : Colors.grey[400],
             ),
           ),
         ),
@@ -197,212 +227,67 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
     );
   }
 
-  Widget _buildSaveButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          // Handle save changes
-          _showSaveConfirmation();
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.orange[500],
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          elevation: 2,
+  Widget _buildTodayMenuHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          "Today's Menu",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
-        child: const Text(
-          'Save Changes',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.edit, size: 20),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
         ),
-      ),
+      ],
     );
   }
 
-  Widget _buildMenuSection() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Today's Menu",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[800],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: _menuItems.map((menuItem) {
-              return _buildMenuItemChip(menuItem);
-            }).toList(),
-          ),
-          const SizedBox(height: 20),
-          _buildAddMenuButton(),
-        ],
-      ),
+  Widget _buildMenuGrid() {
+    return GridView.count(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      crossAxisCount: 4,
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 12,
+      childAspectRatio: 0.85,
+      children: _menuItems.map((item) => _buildMenuCard(item)).toList(),
     );
   }
 
-  Widget _buildMenuItemChip(String menuItem) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.orange[50],
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.orange[100]!,
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            menuItem,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.orange[700],
-            ),
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: () {
-              _removeMenuItem(menuItem);
-            },
-            child: Icon(
-              Icons.close,
-              size: 16,
-              color: Colors.orange[400],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildMenuCard(String itemName) {
+    final menuImages = {
+      'Menudo': 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80',
+      'Bihon': 'https://images.unsplash.com/photo-1609501676725-7186f017a4b7?auto=format&fit=crop&w=200&q=80',
+      'Adobo': 'https://images.unsplash.com/photo-1645112411341-6c4ee32510d8?auto=format&fit=crop&w=200&q=80',
+      'Pakbet': 'https://images.unsplash.com/photo-1609501676725-7186f017a4b7?auto=format&fit=crop&w=200&q=80',
+      'Lilaga': 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80',
+      'Tinola': 'https://images.unsplash.com/photo-1645112411341-6c4ee32510d8?auto=format&fit=crop&w=200&q=80',
+      'Mongo': 'https://images.unsplash.com/photo-1609501676725-7186f017a4b7?auto=format&fit=crop&w=200&q=80',
+      'Pochero': 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80',
+    };
 
-  Widget _buildAddMenuButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton.icon(
-        onPressed: () {
-          _showAddMenuDialog();
-        },
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.orange[500],
-          side: BorderSide(
-            color: Colors.orange[300]!,
-            width: 1.5,
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildNetworkImage(
+          imageUrl: menuImages[itemName] ?? 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80',
+          height: 65,
+          width: 65,
+          fit: BoxFit.cover,
+          borderRadius: 8,
         ),
-        icon: const Icon(Icons.add, size: 20),
-        label: const Text(
-          'Add Menu Item',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
+        const SizedBox(height: 4),
+        Text(
+          itemName,
+          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
-      ),
-    );
-  }
-
-  void _showSaveConfirmation() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Changes saved successfully!',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-    );
-  }
-
-  void _removeMenuItem(String menuItem) {
-    setState(() {
-      _menuItems.remove(menuItem);
-    });
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Removed $menuItem from menu'),
-        backgroundColor: Colors.orange[500],
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
-
-  void _showAddMenuDialog() {
-    TextEditingController controller = TextEditingController();
-    
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add Menu Item'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(
-            hintText: 'Enter menu item name',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (controller.text.trim().isNotEmpty) {
-                setState(() {
-                  _menuItems.add(controller.text.trim());
-                });
-                Navigator.pop(context);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange[500],
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Add'),
-          ),
-        ],
-      ),
+      ],
     );
   }
 }

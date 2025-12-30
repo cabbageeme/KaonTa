@@ -1,28 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kaontaproject/routes/app_routes.dart';
-void main() {
-  runApp(const LocationConfirmApp());
-}
-
-class LocationConfirmApp extends StatelessWidget {
-  const LocationConfirmApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Confirm Location',
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        fontFamily: 'Roboto',
-        useMaterial3: true,
-      ),
-      home: const LocationConfirmScreen(),
-    );
-  }
-}
 
 class LocationConfirmScreen extends StatefulWidget {
-  const LocationConfirmScreen({super.key});
+  final bool isProfileCreation;
+  
+  const LocationConfirmScreen({super.key, this.isProfileCreation = false});
 
   @override
   State<LocationConfirmScreen> createState() => _LocationConfirmScreenState();
@@ -35,38 +16,32 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: widget.isProfileCreation
+          ? null
+          : AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              leading: IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back_ios, size: 20),
+                color: Colors.grey[600],
+              ),
+            ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Back Button
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.arrow_back_ios),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                color: Colors.grey[600],
-              ),
-              const SizedBox(height: 40),
-
-              // Header
+              if (!widget.isProfileCreation) const SizedBox(height: 20),
               _buildHeaderSection(),
               const SizedBox(height: 40),
-
-              // Location Card
               _buildLocationCard(),
-              const SizedBox(height: 32),
-
-              // Confirm Button
+              const Spacer(),
               _buildConfirmButton(),
-              const SizedBox(height: 20),
-
-              // Alternative Option
+              const SizedBox(height: 16),
               _buildAlternativeOption(),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -79,18 +54,18 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Confirm your Location',
+          'Confirm Location',
           style: TextStyle(
             fontSize: 28,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
             color: Colors.grey[800],
           ),
         ),
         const SizedBox(height: 12),
         Text(
-          'We found a location near you. Please confirm if this is correct.',
+          'Please confirm the location for your karinderia.',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 15,
             color: Colors.grey[600],
             height: 1.5,
           ),
@@ -102,21 +77,18 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
   Widget _buildLocationCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.orange[50],
+        color: const Color(0xFFF7F2AD),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.orange[100]!,
-          width: 2,
-        ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             Icons.location_on,
-            color: Colors.orange[500],
-            size: 24,
+            color: Colors.orange[600],
+            size: 28,
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -124,18 +96,19 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Current Location',
+                  'Location',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: Colors.orange[700],
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   'Jalandoni 7th St. Jaro Iloilo City, Philippines',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                     color: Colors.grey[800],
                     height: 1.4,
                   ),
@@ -160,7 +133,6 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          elevation: 2,
         ),
         child: _isLoading
             ? const SizedBox(
@@ -172,11 +144,8 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
                 ),
               )
             : const Text(
-                'Confirm',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                'Confirm Location',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
       ),
     );
@@ -185,14 +154,13 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
   Widget _buildAlternativeOption() {
     return Center(
       child: TextButton(
-        onPressed: () {
-          _showLocationSearch();
-        },
+        onPressed: _showLocationSearch,
         child: Text(
-          'Use different location',
+          'Change location',
           style: TextStyle(
             color: Colors.orange[500],
             fontWeight: FontWeight.w600,
+            fontSize: 14,
           ),
         ),
       ),
@@ -204,14 +172,16 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
       _isLoading = true;
     });
 
-    // Simulate API call
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         _isLoading = false;
       });
 
-      // Show success and navigate
-      _showSuccessDialog();
+      if (widget.isProfileCreation) {
+        Navigator.pop(context, 'Jalandoni 7th St. Jaro Iloilo City, Philippines');
+      } else {
+        _showSuccessDialog();
+      }
     });
   }
 
@@ -243,30 +213,25 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF4CAF50),
+                  color: Colors.green[400],
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.check,
-                  color: Colors.green,
+                  color: Colors.white,
                   size: 40,
                 ),
               ),
               const SizedBox(height: 20),
               const Text(
                 'Location Confirmed!',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 12),
               Text(
                 'Jalandoni 7th St. Jaro Iloilo City, Philippines',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
               const SizedBox(height: 24),
               SizedBox(
@@ -274,17 +239,16 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    // Navigate to home screen
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange[500],
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Explore Nearby Karinderias'),
+                  child: const Text('Done', style: TextStyle(fontWeight: FontWeight.w700)),
                 ),
               ),
             ],
@@ -313,67 +277,64 @@ class _LocationSearchSheetState extends State<LocationSearchSheet> {
   ];
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        left: 24,
+        right: 24,
+        top: 24,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Drag handle
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(height: 20),
-          
-          // Title
-          Text(
-            'Search Location',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
-            ),
-          ),
-          const SizedBox(height: 16),
-          
-          // Search field
-          TextFormField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Enter your address...',
-              prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),
           const SizedBox(height: 20),
-          
-          // Suggestions
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _suggestions.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Icon(
-                    Icons.location_on_outlined,
-                    color: Colors.orange[500],
-                  ),
-                  title: Text(_suggestions[index]),
-                  onTap: () {
-                    Navigator.pop(context);
-                    // Handle location selection
-                  },
-                );
-              },
+          const Text(
+            'Change Location',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: _searchController,
+            autofocus: true,
+            decoration: InputDecoration(
+              hintText: 'Enter your address...',
+              prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             ),
           ),
+          const SizedBox(height: 20),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _suggestions.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(Icons.location_on_outlined, color: Colors.orange[500]),
+                title: Text(_suggestions[index], style: const TextStyle(fontSize: 13)),
+                onTap: () => Navigator.pop(context),
+              );
+            },
+          ),
+          const SizedBox(height: 20),
         ],
       ),
     );

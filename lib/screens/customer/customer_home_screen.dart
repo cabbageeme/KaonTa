@@ -41,7 +41,7 @@ class KarinderiaHomePage extends StatelessWidget {
           children: const [
             Icon(Icons.location_on, size: 18, color: Colors.black87),
             SizedBox(width: 6),
-            Text('Karinderia Spotlight', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            Text('KaonTa', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
           ],
         ),
         Row(
@@ -228,20 +228,30 @@ class KarinderiaHomePage extends StatelessWidget {
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
           shrinkWrap: true,
+          childAspectRatio: 0.9,
           children: menus
               .map((m) => Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.network(
                           m.imageUrl,
-                          width: 70,
-                          height: 70,
+                          width: 60,
+                          height: 60,
                           fit: BoxFit.cover,
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      Text(m.name, style: const TextStyle(fontSize: 12, color: Colors.black87)),
+                      const SizedBox(height: 4),
+                      Flexible(
+                        child: Text(
+                          m.name,
+                          style: const TextStyle(fontSize: 11, color: Colors.black87),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ],
                   ))
               .toList(),
