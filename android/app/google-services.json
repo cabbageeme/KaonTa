@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "154147811402",
+    "project_id": "kaonta-app-2025",
+    "storage_bucket": "kaonta-app-2025.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154147811402:android:c9f44a96a79cff0178f6b3",
+        "android_client_info": {
+          "package_name": "com.example.kaontaproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSqqv2mVuQjHhwGlxjdNQ_EjoZaeWuBZw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

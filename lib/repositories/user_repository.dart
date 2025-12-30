@@ -49,4 +49,17 @@ class UserRepository {
       throw Exception('Failed to check username: $e');
     }
   }
+
+  // Check if a mobile number is already registered
+  Future<bool> mobileExists(String mobile) async {
+    try {
+      QuerySnapshot snapshot = await _usersCollection
+          .where('mobile', isEqualTo: mobile)
+          .limit(1)
+          .get();
+      return snapshot.docs.isNotEmpty;
+    } catch (e) {
+      throw Exception('Failed to check mobile: $e');
+    }
+  }
 }

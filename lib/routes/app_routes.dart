@@ -10,6 +10,7 @@ class AppRoutes {
   static const String customerHome = '/customer-home';
   static const String notifications = '/notifications';
   static const String favorites = '/favorites';
+  static const String profile = '/profile';
   
   // Owner routes
   static const String ownerDashboard = '/owner-dashboard';
@@ -24,7 +25,7 @@ class AppRoutes {
   static bool exists(String route) {
     return [
       userType, socialLogin, login, signup, locationConfirm,
-      customerHome, notifications, favorites,
+      customerHome, notifications, favorites, profile,
       ownerDashboard, ownerMenu, ownerOrders,
     ].contains(route);
   }

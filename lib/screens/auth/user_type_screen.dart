@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/services/user_type_service.dart';
 
 class UserTypeScreen extends StatefulWidget {
   const UserTypeScreen({super.key});
@@ -210,6 +211,9 @@ class _UserTypeScreenState extends State<UserTypeScreen> {
 
   void _handleContinue() {
     if (_selectedUserType != null) {
+      // Store the user type in the service so login screen can use it
+      UserTypeService().setUserType(_selectedUserType!);
+
       switch (_selectedUserType) {
         case 'customer':
           // Use direct Navigator - this will work immediately

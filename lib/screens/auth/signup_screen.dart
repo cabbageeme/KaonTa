@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '/routes/app_routes.dart';
 import '/routes/navigation_service.dart';
 import '/services/auth_service.dart';
+import '/repositories/user_repository.dart';
 
 void main() {
   runApp(const SignUpApp());
@@ -52,6 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _isLoading = false;
 
   AuthService get _authService => AuthService();
+  final UserRepository _userRepository = UserRepository();
 
   @override
   void dispose() {
@@ -289,7 +291,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
         GestureDetector(
           onTap: () {
-            // Navigate to login screen
+            NavigationService.navigateTo(AppRoutes.login);
           },
           child: Text(
             'Log In',
@@ -306,14 +308,58 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void _handleSignUp() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final username = _usernameController.text.trim();
+    final mobile = _mobileController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // Check if mobile already exists to avoid duplicate accounts
+    try {
+      final exists = await _userRepository.mobileExists(mobile);
+      if (exists) {
+        // Prompt user to go to login instead
+        if (!mounted) return;
+        final goToLogin = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Mobile already registered'),
+            content: const Text('This mobile number already has an account. Do you want to go to the Login screen?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Go to Login'),
+              ),
+            ],
+          ),
+        );
+
+        if (goToLogin == true) {
+          try {
+            await NavigationService.navigateTo(AppRoutes.login);
+          } catch (navErr) {
+            // ignore: avoid_print
+            print('SignUp: navigation to login failed: $navErr');
+          }
+        }
+
+        return;
+      }
+    } catch (e) {
+      _showErrorDialog('Failed to verify mobile: $e');
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
 
     try {
-      final username = _usernameController.text.trim();
-      final mobile = _mobileController.text.trim();
-      final password = _passwordController.text.trim();
+      // Debug: start
+      // ignore: avoid_print
+      print('SignUp: starting sign-up flow');
 
       final user = await _authService.signUpWithMobile(
         mobile: mobile,
@@ -321,21 +367,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
         username: username,
       );
 
-      if (user != null && mounted) {
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Account created successfully!'),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        );
+      // Debug: created user
+      // ignore: avoid_print
+      print('SignUp: user returned: ${user?.uid}');
 
-        // Navigate to user type screen or home
-        NavigationService.navigateAndRemoveUntil(AppRoutes.userType);
+      if (user != null && mounted) {
+        // Navigate to user type screen without showing snackbar to avoid widget tree corruption
+        try {
+          await NavigationService.navigateAndRemoveUntil(AppRoutes.userType);
+        } catch (navErr) {
+          // ignore: avoid_print
+          print('SignUp: navigation error: $navErr');
+        }
       }
     } catch (e) {
       _showErrorDialog(e.toString());

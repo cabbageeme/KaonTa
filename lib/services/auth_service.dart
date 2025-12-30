@@ -57,10 +57,16 @@ class AuthService {
       // Generate email from mobile number
       final email = '$mobile@kaonta.local';
 
+      // ignore: avoid_print
+      print('AuthService: attempting createUserWithEmailAndPassword for $email');
+
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      // ignore: avoid_print
+      print('AuthService: created user ${credential.user?.uid}');
 
       // Update display name with username
       await credential.user?.updateDisplayName(username);
@@ -86,8 +92,12 @@ class AuthService {
 
       return credential.user;
     } on FirebaseAuthException catch (e) {
+      // ignore: avoid_print
+      print('AuthService: FirebaseAuthException during signUp: ${e.code} ${e.message}');
       throw _handleAuthError(e);
     } catch (e) {
+      // ignore: avoid_print
+      print('AuthService: Unknown sign-up error: $e');
       throw 'Sign-up failed: $e';
     }
   }
@@ -147,6 +157,29 @@ class AuthService {
     }
 
     try {
+      UserCredential credential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return credential.user;
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthError(e);
+    } catch (e) {
+      throw 'Login failed: $e';
+    }
+  }
+
+  // Login using mobile number (maps to synthesized email)
+  Future<User?> loginWithMobile({
+    required String mobile,
+    required String password,
+  }) async {
+    if (kIsWeb) {
+      throw 'Login on web is not yet configured. Please configure Firebase with FlutterFire CLI.';
+    }
+
+    try {
+      final email = '$mobile@kaonta.local';
       UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,

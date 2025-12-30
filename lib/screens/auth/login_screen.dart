@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '/services/auth_service.dart';
+import '/services/user_type_service.dart';
 import '/routes/app_routes.dart';
 import '/routes/navigation_service.dart';
 
@@ -12,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(); // Changed from username
+  final _mobileController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
@@ -23,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _mobileController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -108,21 +109,21 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildFormFields() {
     return Column(
       children: [
-        // Email Field
+        // Mobile Field
         TextFormField(
-          controller: _emailController,
+          controller: _mobileController,
           decoration: InputDecoration(
-            labelText: 'Email',
-            prefixIcon: Icon(Icons.email, color: Colors.grey[500]),
+            labelText: 'Mobile',
+            prefixIcon: Icon(Icons.phone, color: Colors.grey[500]),
             floatingLabelStyle: const TextStyle(color: Colors.orange),
           ),
-          keyboardType: TextInputType.emailAddress,
+          keyboardType: TextInputType.phone,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter your email';
+              return 'Please enter your mobile number';
             }
-            if (!value.contains('@')) {
-              return 'Please enter a valid email';
+            if (value.length < 7) {
+              return 'Please enter a valid mobile number';
             }
             return null;
           },
@@ -276,17 +277,28 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final email = _emailController.text.trim();
+      final mobile = _mobileController.text.trim();
       final password = _passwordController.text.trim();
 
-      final user = await _authService.loginWithEmailAndPassword(
-        email: email,
+      final user = await _authService.loginWithMobile(
+        mobile: mobile,
         password: password,
       );
 
       if (user != null) {
-        // Navigate to appropriate screen based on user type
-        NavigationService.navigateAndRemoveUntil(AppRoutes.ownerDashboard);
+        // Determine route based on stored user type before navigating
+        final userType = UserTypeService().selectedUserType;
+        final route = userType == 'customer' 
+            ? AppRoutes.customerHome 
+            : AppRoutes.ownerDashboard;
+        
+        // Clear the user type after determining the route
+        UserTypeService().clearUserType();
+        
+        // Navigate cleanly without any overlays
+        if (mounted) {
+          await NavigationService.navigateAndRemoveUntil(route);
+        }
       }
     } catch (e) {
       _showErrorDialog(e.toString());

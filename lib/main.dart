@@ -6,10 +6,11 @@ import 'screens/auth/social_login_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
 import 'screens/shared/location_confirm_screen.dart';
-import 'screens/owner/owner_home_screen.dart';
+import 'screens/owner/owner_home_screen.dart'; 
 import 'screens/customer/customer_home_screen.dart';
 import 'screens/customer/notifications_screen.dart';
 import 'screens/customer/favorites_screen.dart';
+import 'screens/customer/profile_screen.dart';
 import 'routes/app_routes.dart';
 import 'routes/navigation_service.dart';
 import 'screens/shared/welcome_screen.dart';
@@ -52,10 +53,12 @@ class KarinderiaApp extends StatelessWidget {
         AppRoutes.login: (context) => const LoginScreen(),
         AppRoutes.signup: (context) => const SignUpScreen(),
         AppRoutes.locationConfirm: (context) => const LocationConfirmScreen(),
-        AppRoutes.customerHome: (context) => const KarinderiaApp(),
-        AppRoutes.ownerDashboard: (context) => const KarinderiaOwnerApp(),
-        AppRoutes.notifications: (context) => const EnhancedNotificationsApp(),
-        AppRoutes.favorites: (context) => const EnhancedFavoritesApp(),
+        // Use Screen/Page widgets instead of App wrappers to avoid nested MaterialApp
+        AppRoutes.customerHome: (context) => const KarinderiaHomePage(),
+        AppRoutes.ownerDashboard: (context) => const OwnerDashboard(),
+        AppRoutes.notifications: (context) => const EnhancedNotificationsScreen(),
+        AppRoutes.favorites: (context) => const EnhancedFavoritesScreen(),
+        AppRoutes.profile: (context) => const ProfileScreen(),
       },
     );
   }

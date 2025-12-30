@@ -1,24 +1,6 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const KarinderiaApp());
-}
-
-class KarinderiaApp extends StatelessWidget {
-  const KarinderiaApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Karinderia Spotlight',
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        fontFamily: 'Roboto',
-      ),
-      home: const KarinderiaHomePage(),
-    );
-  }
-}
+import '/routes/app_routes.dart';
+import '/routes/navigation_service.dart';
 
 class KarinderiaHomePage extends StatelessWidget {
   const KarinderiaHomePage({super.key});
@@ -26,101 +8,117 @@ class KarinderiaHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Section
-              _buildHeaderSection(),
-              
-              // Featured Karinderia Section
-              _buildFeaturedSection(),
-              
-              // Nearby Karinderias Section
+              _buildTopBar(),
+              const SizedBox(height: 12),
+              _buildGreeting(),
+              const SizedBox(height: 16),
+              _buildFeaturedCard(),
+              const SizedBox(height: 18),
               _buildNearbySection(),
-              
-              // Popular Menus Section
-              _buildPopularMenusSection(),
+              const SizedBox(height: 18),
+              _buildPopularMenus(),
+              const SizedBox(height: 90),
             ],
           ),
         ),
       ),
+      bottomNavigationBar: _buildBottomNav(),
     );
   }
 
-  Widget _buildHeaderSection() {
+  Widget _buildTopBar() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: const [
+            Icon(Icons.location_on, size: 18, color: Colors.black87),
+            SizedBox(width: 6),
+            Text('Karinderia Spotlight', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+          ],
+        ),
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.notifications_none, color: Colors.black87),
+              onPressed: () => NavigationService.navigateTo(AppRoutes.notifications),
+            ),
+            IconButton(
+              icon: const Icon(Icons.favorite_border, color: Colors.black87),
+              onPressed: () => NavigationService.navigateTo(AppRoutes.favorites),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGreeting() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        Text(
+          'Hello, Clarence',
+          style: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.w800,
+            color: Colors.black87,
+            height: 1.1,
+          ),
+        ),
+        SizedBox(height: 4),
+        Text('Karinderia Spotlight', style: TextStyle(fontSize: 18, color: Colors.black87)),
+      ],
+    );
+  }
+
+  Widget _buildFeaturedCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: const Color(0xFFF4F9DF),
+        borderRadius: BorderRadius.circular(14),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.all(12),
+      child: Row(
         children: [
-          Text(
-            'Hello, Clarence',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=200&q=80',
+              width: 110,
+              height: 110,
+              fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Karinderia Spotlight',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeaturedSection() {
-    return Container(
-      margin: const EdgeInsets.all(20),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Maria Lopez',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Located near Liero St., Maria Lopez offers a lot of varieties and their signature special Lapaz Batchoy.',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-              height: 1.4,
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'Maria Lopez',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 6),
+                Text(
+                  'Located near Liero St., Maria Lopez offers a lot of varieties and their signature special Lapaz Batchoy.',
+                  style: TextStyle(fontSize: 13.5, color: Colors.black87, height: 1.35),
+                ),
+                SizedBox(height: 10),
+                Text('Proudly serving: Lapaz Batchoy', style: TextStyle(fontSize: 12.5, color: Colors.black87)),
+              ],
             ),
           ),
         ],
@@ -129,206 +127,201 @@ class KarinderiaHomePage extends StatelessWidget {
   }
 
   Widget _buildNearbySection() {
+    final items = [
+      _NearbyData('MARIA\'S KARINDERYA', '0.2km', 'CLOSE', Colors.red, 'Updated 5 mins ago'),
+      _NearbyData('NORA\'S KARINDERYA', '1.5km', 'OPEN', Colors.green, 'Updated 2 mins ago'),
+      _NearbyData('IBARRADO\'S KARINDERYA', '0.7km', 'MAINTENANCE', Colors.orange, 'Updated 9 mins ago'),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            Text('Nearby Karinderias', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.black87)),
+            Text('Browse Map', style: TextStyle(fontSize: 13, color: Colors.brown)),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Column(
+          children: items
+              .map((item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: _buildNearbyCard(item),
+                  ))
+              .toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNearbyCard(_NearbyData data) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFB6F2C3),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Text(
-                '©',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
+              const Icon(Icons.place, size: 16, color: Colors.brown),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  data.name,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.brown),
                 ),
               ),
-              const SizedBox(width: 4),
-              Text(
-                'Nearby Karinderias',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[700],
-                ),
-              ),
+              Text(data.distance, style: const TextStyle(fontSize: 12, color: Colors.brown)),
             ],
           ),
-          const SizedBox(height: 16),
-          _buildKarinderiaCard(
-            name: "MARIA'S KARINDERYA",
-            distance: "0.2km",
-            status: "CLOSE",
-            statusColor: Colors.red,
-            updated: "Updated 5 mins ago",
-          ),
-          const SizedBox(height: 12),
-          _buildKarinderiaCard(
-            name: "NORA'S KARINDERYA",
-            distance: "1.5km",
-            status: "OPEN",
-            statusColor: Colors.green,
-            updated: "Updated 2 mins ago",
-          ),
-          const SizedBox(height: 12),
-          _buildKarinderiaCard(
-            name: "IBARRADO'S KARINDERYA",
-            distance: "0.7km",
-            status: "MAINTENANCE",
-            statusColor: Colors.orange,
-            updated: "Updated 9 mins ago",
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              _statusDot(data.statusColor),
+              const SizedBox(width: 4),
+              Text('Status: ${data.status}', style: const TextStyle(fontSize: 12, color: Colors.brown)),
+              const SizedBox(width: 8),
+              _statusDot(Colors.green),
+              const SizedBox(width: 4),
+              Text('Updated', style: const TextStyle(fontSize: 12, color: Colors.brown)),
+              const SizedBox(width: 4),
+              Text(data.updated, style: const TextStyle(fontSize: 12, color: Colors.brown)),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildKarinderiaCard({
-    required String name,
-    required String distance,
-    required String status,
-    required Color statusColor,
-    required String updated,
-  }) {
+  Widget _buildPopularMenus() {
+    final menus = [
+      _MenuItem('Menudo', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Bihon', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Adobo', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Pakbet', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Lilaga', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Tinola', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Mongo', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Pochero', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: const [
+            Icon(Icons.circle_outlined, size: 12, color: Colors.black87),
+            SizedBox(width: 8),
+            Text('Popular Menus', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+          ],
+        ),
+        const SizedBox(height: 12),
+        GridView.count(
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 4,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          shrinkWrap: true,
+          children: menus
+              .map((m) => Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          m.imageUrl,
+                          width: 70,
+                          height: 70,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(m.name, style: const TextStyle(fontSize: 12, color: Colors.black87)),
+                    ],
+                  ))
+              .toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBottomNav() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 6,
-            offset: const Offset(0, 1),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
           ),
         ],
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(
-            Icons.restaurant,
-            color: Colors.orange[400],
-            size: 24,
+          _navIcon(icon: Icons.home, label: 'Home', isActive: true, onTap: () {}),
+          _navIcon(
+            icon: Icons.favorite_border,
+            label: 'Favorites',
+            onTap: () => NavigationService.navigateTo(AppRoutes.favorites),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[800],
-                  ),
-                ),
-                Text(
-                  distance,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[500],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: statusColor,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                updated,
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.grey[400],
-                ),
-              ),
-            ],
+          _navIcon(
+            icon: Icons.person_outline,
+            label: 'Profile',
+            onTap: () => NavigationService.navigateTo(AppRoutes.profile),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPopularMenusSection() {
-    final List<String> menuItems = [
-      'Menudo', 'Bihon', 'Adobo', 'Pakbet',
-      'Lilaga', 'Tinola', 'Mongo', 'Pochero'
-    ];
-
-    return Container(
-      margin: const EdgeInsets.all(20),
+  Widget _navIcon({required IconData icon, required String label, bool isActive = false, required VoidCallback onTap}) {
+    final color = isActive ? Colors.black : Colors.grey[600];
+    return GestureDetector(
+      onTap: onTap,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.note,
-                color: Colors.orange[400],
-                size: 18,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'Popular Menus',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[700],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: menuItems.map((menu) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
-                  border: Border.all(
-                    color: Colors.grey[200]!,
-                    width: 1,
-                  ),
-                ),
-                child: Text(
-                  menu,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 4),
+          Text(label, style: TextStyle(fontSize: 12, color: color)),
         ],
       ),
     );
   }
+
+  Widget _statusDot(Color color) {
+    return Container(
+      width: 8,
+      height: 8,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    );
+  }
+}
+
+class _NearbyData {
+  final String name;
+  final String distance;
+  final String status;
+  final Color statusColor;
+  final String updated;
+
+  _NearbyData(this.name, this.distance, this.status, this.statusColor, this.updated);
+}
+
+class _MenuItem {
+  final String name;
+  final String imageUrl;
+  _MenuItem(this.name, this.imageUrl);
 }

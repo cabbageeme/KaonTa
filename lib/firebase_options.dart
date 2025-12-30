@@ -10,11 +10,11 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCjTaNecnjepT-hSFllLdjoxTqV6BCMV1E',
-    appId: '1:948008568812:android:eeebad39215e0157a562c9',
-    messagingSenderId: '948008568812',
-    projectId: 'kaonta-dc985',
-    storageBucket: 'kaonta-dc985.appspot.com',
+    apiKey: 'AIzaSyDSqqv2mVuQjHhwGlxjdNQ_EjoZaeWuBZw',
+    appId: '1:154147811402:android:c9f44a96a79cff0178f6b3',
+    messagingSenderId: '154147811402',
+    projectId: 'kaonta-app-2025',
+    storageBucket: 'kaonta-app-2025.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
