@@ -26,6 +26,274 @@ class _KarinderiaMapScreenState extends State<KarinderiaMapScreen> {
     return 12742 * asin(sqrt(a)); // 2 * R; R = 6371 km
   }
 
+  void _addDemoMarkers(Set<Marker> markers, Map<String, UserModel> owners) {
+    // Demo karinderia data
+    final demoKarinderias = [
+      {
+        'id': 'demo-maria-lopez',
+        'name': 'Maria Lopez\'s Karinderia',
+        'lat': 10.7202,
+        'lng': 122.5621,
+        'isOpen': true,
+      },
+      {
+        'id': 'demo-nora',
+        'name': 'Nora\'s Karinderia',
+        'lat': 10.7185,
+        'lng': 122.5580,
+        'isOpen': true,
+      },
+      {
+        'id': 'demo-ibarrado',
+        'name': 'Ibarrado\'s Karinderia',
+        'lat': 10.7230,
+        'lng': 122.5650,
+        'isOpen': false,
+      },
+    ];
+
+    for (var demo in demoKarinderias) {
+      final demoUser = UserModel(
+        uid: demo['id'] as String,
+        email: '${demo['id']}@demo.com',
+        storeName: demo['name'] as String,
+        latitude: demo['lat'] as double,
+        longitude: demo['lng'] as double,
+        isStoreOpen: demo['isOpen'] as bool,
+        userType: 'owner',
+        createdAt: DateTime.now(),
+      );
+
+      owners[demo['id'] as String] = demoUser;
+
+      markers.add(
+        Marker(
+          markerId: MarkerId(demo['id'] as String),
+          position: LatLng(demo['lat'] as double, demo['lng'] as double),
+          infoWindow: InfoWindow(
+            title: demo['name'] as String,
+            snippet: 'Tap marker to view menu',
+          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+          onTap: () => _showDemoKarinderiaDetails(demo['id'] as String),
+        ),
+      );
+    }
+
+    print('Added ${demoKarinderias.length} demo markers');
+  }
+
+  void _showDemoKarinderiaDetails(String ownerId) {
+    final owner = _owners[ownerId];
+    if (owner == null) return;
+
+    final distance = _calculateDistance(
+      10.7202, 122.5621, // Customer location (Iloilo default)
+      owner.latitude!, owner.longitude!,
+    );
+
+    // Demo dishes data
+    final demoDishes = [
+      DishModel(
+        id: 'demo-dish-1',
+        ownerId: ownerId,
+        name: 'Menudo',
+        imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80',
+        price: 50.0,
+        isAvailable: true,
+        updatedAt: DateTime.now(),
+      ),
+      DishModel(
+        id: 'demo-dish-2',
+        ownerId: ownerId,
+        name: 'Sinigang',
+        imageUrl: 'https://images.unsplash.com/photo-1585032226651-759b8d3761c4?auto=format&fit=crop&w=200&q=80',
+        price: 45.0,
+        isAvailable: owner.isStoreOpen ?? false,
+        updatedAt: DateTime.now(),
+      ),
+      DishModel(
+        id: 'demo-dish-3',
+        ownerId: ownerId,
+        name: 'Adobo',
+        imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80',
+        price: 55.0,
+        isAvailable: true,
+        updatedAt: DateTime.now(),
+      ),
+      DishModel(
+        id: 'demo-dish-4',
+        ownerId: ownerId,
+        name: 'Pakbet',
+        imageUrl: 'https://images.unsplash.com/photo-1609501676725-7186f017a4b4?auto=format&fit=crop&w=200&q=80',
+        price: 40.0,
+        isAvailable: false,
+        updatedAt: DateTime.now(),
+      ),
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.4,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) {
+          return Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.orange[50],
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.orange[200],
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.store, color: Colors.white, size: 30),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                owner.storeName ?? 'Karinderia',
+                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.location_on, size: 16, color: Colors.orange[600]),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${distance.toStringAsFixed(2)} km away',
+                                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: owner.isStoreOpen == true ? Colors.green : Colors.red,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      owner.isStoreOpen == true ? 'OPEN' : 'CLOSED',
+                                      style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Icon(Icons.restaurant_menu, size: 20),
+                    SizedBox(width: 8),
+                    Text('Available Menu', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.separated(
+                  controller: scrollController,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: demoDishes.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final dish = demoDishes[index];
+                    return Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: dish.isAvailable ? Colors.white : Colors.grey[100],
+                        border: Border.all(color: Colors.grey[200]!),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              dish.imageUrl,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                width: 50,
+                                height: 50,
+                                color: Colors.grey[300],
+                                child: const Icon(Icons.fastfood, size: 24),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(dish.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                                Text('₱${dish.price.toStringAsFixed(2)}', style: TextStyle(fontSize: 13, color: Colors.grey[600])),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: dish.isAvailable ? Colors.green[100] : Colors.grey[300],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              dish.isAvailable ? 'Available' : 'Out of stock',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: dish.isAvailable ? Colors.green[700] : Colors.grey[700],
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -43,11 +311,15 @@ class _KarinderiaMapScreenState extends State<KarinderiaMapScreen> {
       Set<Marker> markers = {};
       Map<String, UserModel> owners = {};
 
+      print('Found ${snapshot.docs.length} owner users');
+
       for (var doc in snapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
         final latitude = data['latitude'] as double?;
         final longitude = data['longitude'] as double?;
         final userModel = UserModel.fromMap(data);
+
+        print('Owner: ${userModel.storeName ?? doc.id}, lat: $latitude, lng: $longitude');
 
         if (latitude != null && longitude != null) {
           owners[doc.id] = userModel;
@@ -67,12 +339,21 @@ class _KarinderiaMapScreenState extends State<KarinderiaMapScreen> {
         }
       }
 
+      print('Created ${markers.length} markers');
+
+      // Add demo markers if no real ones exist
+      if (markers.isEmpty) {
+        print('No real karinderias found, adding demo markers...');
+        _addDemoMarkers(markers, owners);
+      }
+
       setState(() {
         _markers = markers;
         _owners = owners;
         _isLoading = false;
       });
     } catch (e) {
+      print('Error loading locations: $e');
       setState(() {
         _isLoading = false;
       });
@@ -291,29 +572,53 @@ class _KarinderiaMapScreenState extends State<KarinderiaMapScreen> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : _markers.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.location_off, size: 48, color: Colors.grey[400]),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No Karinderias Found',
-                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
-                )
-              : GoogleMap(
+          : Stack(
+              children: [
+                GoogleMap(
                   initialCameraPosition: CameraPosition(
-                    target: _markers.first.position,
+                    target: _markers.isNotEmpty 
+                        ? _markers.first.position 
+                        : const LatLng(10.7202, 122.5621), // Default to Iloilo City
                     zoom: 13,
                   ),
                   markers: _markers,
                   myLocationButtonEnabled: true,
                   zoomControlsEnabled: true,
                 ),
+                if (_markers.isEmpty)
+                  Positioned(
+                    top: 16,
+                    left: 16,
+                    right: 16,
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline, color: Colors.orange[700], size: 24),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'No karinderias found. Check back later!',
+                              style: TextStyle(fontSize: 14, color: Colors.grey[800]),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
     );
   }
 }

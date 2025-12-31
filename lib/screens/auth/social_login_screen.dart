@@ -38,18 +38,11 @@ class _SocialLoginScreenState extends State<SocialLoginScreen> {
               // Header Section
               Column(
                 children: [
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.orange[50],
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.restaurant,
-                      color: Colors.orange[500],
-                      size: 40,
-                    ),
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 32),
                   Text(

@@ -96,6 +96,33 @@ class KarinderiaHomePage extends StatelessWidget {
               width: 110,
               height: 110,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: 110,
+                height: 110,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.fastfood, size: 40, color: Colors.grey),
+              ),
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  width: 110,
+                  height: 110,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(width: 12),
@@ -201,14 +228,14 @@ class KarinderiaHomePage extends StatelessWidget {
 
   Widget _buildPopularMenus() {
     final menus = [
-      _MenuItem('Menudo', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
-      _MenuItem('Bihon', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
-      _MenuItem('Adobo', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
-      _MenuItem('Pakbet', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
-      _MenuItem('Lilaga', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
-      _MenuItem('Tinola', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
-      _MenuItem('Mongo', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
-      _MenuItem('Pochero', 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Menudo', 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Bihon', 'https://images.unsplash.com/photo-1585032226651-759b8d3761c4?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Adobo', 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Pakbet', 'https://images.unsplash.com/photo-1609501676725-7186f017a4b4?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Lilaga', 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Tinola', 'https://images.unsplash.com/photo-1585032226651-759b8d3761c4?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Mongo', 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80'),
+      _MenuItem('Pochero', 'https://images.unsplash.com/photo-1609501676725-7186f017a4b4?auto=format&fit=crop&w=200&q=80'),
     ];
 
     return Column(
@@ -240,6 +267,33 @@ class KarinderiaHomePage extends StatelessWidget {
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(Icons.fastfood, size: 24, color: Colors.grey),
+                          ),
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Center(
+                                child: SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(strokeWidth: 1.5),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(height: 4),

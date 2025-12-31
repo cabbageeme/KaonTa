@@ -73,21 +73,21 @@ class EnhancedFavoritesScreen extends StatelessWidget {
 
   static const List<FavoriteMenu> _favoriteMenus = [
     FavoriteMenu('Menudo',
-        'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80'),
     FavoriteMenu('Bihon',
-        'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+        'https://images.unsplash.com/photo-1585032226651-759b8d3761c4?auto=format&fit=crop&w=200&q=80'),
     FavoriteMenu('Adobo',
-        'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+        'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80'),
     FavoriteMenu('Pakbet',
-        'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+        'https://images.unsplash.com/photo-1609501676725-7186f017a4b4?auto=format&fit=crop&w=200&q=80'),
     FavoriteMenu('Lilaga',
-        'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80'),
     FavoriteMenu('Tinola',
-        'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+        'https://images.unsplash.com/photo-1585032226651-759b8d3761c4?auto=format&fit=crop&w=200&q=80'),
     FavoriteMenu('Mongo',
-        'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+        'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80'),
     FavoriteMenu('Pochero',
-        'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80'),
+        'https://images.unsplash.com/photo-1609501676725-7186f017a4b4?auto=format&fit=crop&w=200&q=80'),
   ];
 
   @override

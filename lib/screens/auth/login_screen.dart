@@ -53,7 +53,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   constraints: const BoxConstraints(),
                   color: Colors.grey[600],
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
+
+                // Logo
+                Center(
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(height: 32),
 
                 // Header
                 _buildHeaderSection(),
@@ -294,10 +305,13 @@ class _LoginScreenState extends State<LoginScreen> {
         // Debug: Print userType
         print('Login: userType from database = ${userData?.userType}');
         print('Login: username = ${userData?.username}');
+        print('Login: uid = ${user.uid}');
         
         // Determine route based on userType from database
         // Default to customer if userType is not set
         final userType = userData?.userType ?? 'customer';
+        print('Login: determined userType = $userType');
+        
         final route = (userType == 'owner') 
             ? AppRoutes.ownerDashboard 
             : AppRoutes.customerHome;

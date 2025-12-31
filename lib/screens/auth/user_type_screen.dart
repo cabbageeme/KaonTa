@@ -34,11 +34,22 @@ class _UserTypeScreenState extends State<UserTypeScreen> {
                 constraints: const BoxConstraints(),
                 color: Colors.grey[600],
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
+
+              // Logo
+              Center(
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              const SizedBox(height: 32),
 
               // Header
               _buildHeaderSection(),
-              const SizedBox(height: 60),
+              const SizedBox(height: 40),
 
               // User Type Selection
               _buildUserTypeSelection(),
