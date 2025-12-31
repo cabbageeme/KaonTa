@@ -291,10 +291,18 @@ class _LoginScreenState extends State<LoginScreen> {
         final userRepository = UserRepository();
         final userData = await userRepository.getUser(user.uid);
         
+        // Debug: Print userType
+        print('Login: userType from database = ${userData?.userType}');
+        print('Login: username = ${userData?.username}');
+        
         // Determine route based on userType from database
-        final route = (userData?.userType == 'customer') 
-            ? AppRoutes.customerHome 
-            : AppRoutes.ownerDashboard;
+        // Default to customer if userType is not set
+        final userType = userData?.userType ?? 'customer';
+        final route = (userType == 'owner') 
+            ? AppRoutes.ownerDashboard 
+            : AppRoutes.customerHome;
+        
+        print('Login: routing to $route');
         
         // Clear the user type service
         UserTypeService().clearUserType();

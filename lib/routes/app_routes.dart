@@ -11,6 +11,7 @@ class AppRoutes {
   static const String notifications = '/notifications';
   static const String favorites = '/favorites';
   static const String profile = '/profile';
+  static const String karinderiaMap = '/karinderia-map';
   
   // Owner routes
   static const String ownerDashboard = '/owner-dashboard';

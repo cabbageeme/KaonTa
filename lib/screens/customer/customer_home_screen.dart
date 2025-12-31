@@ -282,6 +282,11 @@ class KarinderiaHomePage extends StatelessWidget {
         children: [
           _navIcon(icon: Icons.home, label: 'Home', isActive: true, onTap: () {}),
           _navIcon(
+            icon: Icons.map,
+            label: 'Map',
+            onTap: () => NavigationService.navigateTo(AppRoutes.karinderiaMap),
+          ),
+          _navIcon(
             icon: Icons.favorite_border,
             label: 'Favorites',
             onTap: () => NavigationService.navigateTo(AppRoutes.favorites),

@@ -63,5 +63,11 @@ The default widget test was updated to verify Splash renders correctly with `Kar
 ## Notes
 - No Google Sign-In: The system uses mobile + password only. Ensure your Firebase project is created and `firebase_options.dart` is generated as shown above.
 
+## Protecting API Keys (public repo hygiene)
+- Keep secrets out of version control: add `firebase_options.dart`, `google-services.json`, `GoogleService-Info.plist`, and any `.env*` files to `.gitignore` (do not commit generated config).
+- Distribute envs securely: share keys via your secret manager (GitHub Actions secrets, 1Password, etc.) or send out-of-band; teammates regenerate configs locally with `flutterfire configure`.
+- Rotate leaked keys: if a key was ever committed, revoke/rotate it in Firebase console and regenerate the config files.
+- CI/CD tip: reference secrets via environment variables in your pipeline; never echo raw keys into logs.
+
 ## License
 For academic use per course requirements.

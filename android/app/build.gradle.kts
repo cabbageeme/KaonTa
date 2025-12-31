@@ -27,10 +27,16 @@ android {
         applicationId = "com.example.kaontaproject"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // Google Maps requires minSdk 21+
+        minSdk = maxOf(21, flutter.minSdkVersion)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // Provide Maps API key via manifest placeholder
+        manifestPlaceholders += mapOf(
+            "MAPS_API_KEY" to (project.findProperty("MAPS_API_KEY") as String? ?: "YOUR_GOOGLE_MAPS_API_KEY")
+        )
     }
 
     buildTypes {

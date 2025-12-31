@@ -8,10 +8,12 @@ import 'screens/auth/signup_screen.dart';
 import 'screens/shared/location_confirm_screen.dart';
 import 'screens/owner/owner_home_screen.dart'; 
 import 'screens/owner/owner_profile_screen.dart';
+import 'screens/owner/owner_menu_screen.dart';
 import 'screens/customer/customer_home_screen.dart';
 import 'screens/customer/notifications_screen.dart';
 import 'screens/customer/favorites_screen.dart';
 import 'screens/customer/profile_screen.dart';
+import 'screens/customer/karinderia_map_screen.dart';
 import 'routes/app_routes.dart';
 import 'routes/navigation_service.dart';
 import 'screens/shared/welcome_screen.dart';
@@ -60,7 +62,9 @@ class KarinderiaApp extends StatelessWidget {
         AppRoutes.notifications: (context) => const EnhancedNotificationsScreen(),
         AppRoutes.favorites: (context) => const EnhancedFavoritesScreen(),
         AppRoutes.profile: (context) => const ProfileScreen(),
+        AppRoutes.karinderiaMap: (context) => const KarinderiaMapScreen(),
         AppRoutes.ownerProfile: (context) => const OwnerProfileScreen(),
+        '/owner-menu': (context) => const OwnerMenuScreen(),
       },
     );
   }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../repositories/user_repository.dart';
+import '../../routes/app_routes.dart';
 
 Widget _buildNetworkImage({
   required String imageUrl,
@@ -51,6 +54,7 @@ class OwnerProfileScreen extends StatefulWidget {
 
 class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
   bool _isLoading = false;
+  final UserRepository _userRepository = UserRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -260,15 +264,32 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
     );
   }
 
-  void _showLocationEditModal() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => const LocationEditSheet(),
-    );
+  void _showLocationEditModal() async {
+    final LatLng? selectedLocation = await Navigator.pushNamed(
+      context,
+      AppRoutes.locationConfirm,
+      arguments: {'isProfileCreation': true},
+    ) as LatLng?;
+
+    if (selectedLocation != null && mounted) {
+      await _userRepository.updateUser(
+        FirebaseAuth.instance.currentUser!.uid,
+        {
+          'latitude': selectedLocation.latitude,
+          'longitude': selectedLocation.longitude,
+        },
+      );
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Location updated successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        setState(() {}); // Refresh UI
+      }
+    }
   }
 
   void _handleSignOut() {

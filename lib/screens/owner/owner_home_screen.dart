@@ -52,9 +52,9 @@ class OwnerDashboard extends StatefulWidget {
 class _OwnerDashboardState extends State<OwnerDashboard> {
   bool _isOpen = true;
   final List<String> _menuItems = [
+    'Menu', 'Orders', 'Stats', 'Settings',
     'Menudo', 'Bihon', 'Adobo', 'Pakbet',
     'Lilaga', 'Tinola', 'Mongo', 'Pochero',
-    'Menudo', 'Bihon', 'Adobo', 'Pakbet'
   ];
 
   @override
@@ -259,6 +259,10 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
 
   Widget _buildMenuCard(String itemName) {
     final menuImages = {
+      'Menu': Icons.restaurant_menu,
+      'Orders': Icons.receipt_long,
+      'Stats': Icons.bar_chart,
+      'Settings': Icons.settings,
       'Menudo': 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80',
       'Bihon': 'https://images.unsplash.com/photo-1609501676725-7186f017a4b7?auto=format&fit=crop&w=200&q=80',
       'Adobo': 'https://images.unsplash.com/photo-1645112411341-6c4ee32510d8?auto=format&fit=crop&w=200&q=80',
@@ -269,25 +273,47 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
       'Pochero': 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80',
     };
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _buildNetworkImage(
-          imageUrl: menuImages[itemName] ?? 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80',
-          height: 65,
-          width: 65,
-          fit: BoxFit.cover,
-          borderRadius: 8,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          itemName,
-          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+    return GestureDetector(
+      onTap: () {
+        if (itemName == 'Menu') {
+          Navigator.pushNamed(context, '/owner-menu');
+        }
+      },
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (menuImages[itemName] is IconData)
+              Container(
+                height: 65,
+                width: 65,
+                decoration: BoxDecoration(
+                  color: Colors.orange[100],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  menuImages[itemName] as IconData,
+                  size: 32,
+                  color: Colors.orange[700],
+                ),
+              )
+            else
+              _buildNetworkImage(
+                imageUrl: menuImages[itemName] as String? ?? 'https://images.unsplash.com/photo-1604908176603-0280c68e3b30?auto=format&fit=crop&w=200&q=80',
+                height: 65,
+                width: 65,
+                fit: BoxFit.cover,
+                borderRadius: 8,
+              ),
+          const SizedBox(height: 4),
+          Text(
+            itemName,
+            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      )
     );
   }
 }

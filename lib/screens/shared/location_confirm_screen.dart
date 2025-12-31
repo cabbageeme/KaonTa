@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationConfirmScreen extends StatefulWidget {
   final bool isProfileCreation;
@@ -11,6 +12,22 @@ class LocationConfirmScreen extends StatefulWidget {
 
 class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
   bool _isLoading = false;
+  final CameraPosition _initialCameraPosition = const CameraPosition(
+    target: LatLng(10.7202, 122.5621), // Iloilo default
+    zoom: 14,
+  );
+
+  LatLng _selectedPosition = const LatLng(10.7202, 122.5621);
+  Set<Marker> _markers = {
+    const Marker(
+      markerId: MarkerId('karinderia'),
+      position: LatLng(10.7202, 122.5621),
+      infoWindow: InfoWindow(title: 'Karinderia Location'),
+    ),
+  };
+
+  String _formatLatLng(LatLng pos) =>
+      '${pos.latitude.toStringAsFixed(5)}, ${pos.longitude.toStringAsFixed(5)}';
 
   @override
   Widget build(BuildContext context) {
@@ -75,49 +92,73 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
   }
 
   Widget _buildLocationCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F2AD),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.location_on,
-            color: Colors.orange[600],
-            size: 28,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF7F2AD),
+            borderRadius: BorderRadius.circular(16),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Location',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.orange[700],
-                  ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.location_on,
+                color: Colors.orange[600],
+                size: 28,
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Location',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.orange[700],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Jalandoni 7th St. Jaro Iloilo City, Philippines',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[800],
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Pin: ${_formatLatLng(_selectedPosition)}',
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Jalandoni 7th St. Jaro Iloilo City, Philippines',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[800],
-                    height: 1.4,
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 240,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: GoogleMap(
+              initialCameraPosition: _initialCameraPosition,
+              markers: _markers,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              onTap: _onMapTap,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -178,7 +219,7 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
       });
 
       if (widget.isProfileCreation) {
-        Navigator.pop(context, 'Jalandoni 7th St. Jaro Iloilo City, Philippines');
+        Navigator.pop(context, _selectedPosition);
       } else {
         _showSuccessDialog();
       }
@@ -194,6 +235,19 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
       ),
       builder: (context) => const LocationSearchSheet(),
     );
+  }
+
+  void _onMapTap(LatLng position) {
+    setState(() {
+      _selectedPosition = position;
+      _markers = {
+        Marker(
+          markerId: const MarkerId('karinderia'),
+          position: position,
+          infoWindow: const InfoWindow(title: 'Karinderia Location'),
+        ),
+      };
+    });
   }
 
   void _showSuccessDialog() {
@@ -229,7 +283,7 @@ class _LocationConfirmScreenState extends State<LocationConfirmScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Jalandoni 7th St. Jaro Iloilo City, Philippines',
+                'Pin: ${_formatLatLng(_selectedPosition)}',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
